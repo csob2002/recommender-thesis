@@ -237,7 +237,7 @@ export RUN_RECBOLE_MODELS=1
 | Variable | Default | Meaning |
 |---|---:|---|
 | `RUN_RECBOLE_MODELS` | `1` | Enables RecBole training/evaluation. |
-| `RUN_MODEL_LIST` | all five models | Optional comma-separated subset, e.g. `BPR,LightGCN`. |
+| `RECBOLE_MODELS` | all five models | Optional comma-separated subset read by `recbole_models.py`, e.g. `BPR,LightGCN`. |
 | `RUN_ITEM_VARIANTS` | `1` | Includes `raw_aligned`, `sparse`, and `dense`. |
 | `RUN_USER_VARIANTS` | `1` | Includes `raw_aligned_fixitems`, `user_sparse`, and `user_dense`. |
 | `RUN_RAW_FULL_VARIANT` | `0` | Includes `raw_full` if present. |
@@ -264,7 +264,6 @@ export RUN_RECBOLE_MODELS=1
 | `COMPUTE_BEYOND_ACCURACY` | `0` | Enables additional beyond-accuracy metrics. The final main thesis runs used `1`. |
 | `COMPUTE_ILS` | `0` | Enables ILS/Diversity computation. The final main thesis runs used `1`; this can be expensive. |
 | `LOG_SPARSITY_PER_MODEL` | `0` | Logs extra sparsity reports per model. |
-| `RB_ADAPTER_DEBUG` | `0` | Enables debug prints in the external RecBole scoring adapter. |
 
 The defaults are conservative. To reproduce the thesis main metrics, explicitly enable the beyond-accuracy diagnostics used by the submitted runs:
 
@@ -272,6 +271,8 @@ The defaults are conservative. To reproduce the thesis main metrics, explicitly 
 export COMPUTE_BEYOND_ACCURACY=1
 export COMPUTE_ILS=1
 ```
+
+Adapter debug note: the submitted `recbole_models.py` snapshot may print a small number of `[DBG]` lines from the external RecBole scoring adapter. This is expected diagnostic output in the submitted code snapshot, not a documented environment-variable switch, and it does not affect the computed metrics.
 
 ---
 
@@ -351,7 +352,7 @@ export RUN_RECBOLE_MODELS=1
 export CUDA_VISIBLE_DEVICES=0
 export RECBOLE_DEVICE=cuda:0
 
-export RUN_MODEL_LIST="BPR,ItemKNN,LightGCN,NeuMF,MultiVAE"
+export RECBOLE_MODELS="BPR,ItemKNN,LightGCN,NeuMF,MultiVAE"
 export RUN_ITEM_VARIANTS=1
 export RUN_USER_VARIANTS=1
 export RUN_KCORE_VARIANTS=1
@@ -442,7 +443,7 @@ The cleaned aggregate CSV files in `results/` follow these thesis-level conventi
 - Keep `NEGATIVE_CANDIDATE_SAMPLE` fixed across experiments that you want to compare directly.
 - Keep `RUN_ID` fixed between preparation and model execution.
 - Use `RUN_VARIANT_GLOB` to run only selected variants without changing the variant-building code.
-- Use `RUN_MODEL_LIST` for quick sanity checks, for example `RUN_MODEL_LIST=BPR`.
+- Use `RECBOLE_MODELS` for quick sanity checks, for example `RECBOLE_MODELS=BPR`.
 - Use `REUSE_ARTIFACTS=0` if you want to force retraining and overwrite cached metrics.
 - Use `SAVE_RECS=1` before using `EVAL_ONLY=1`.
 - Do not interpret sampled-candidate metrics as full-catalog ranking metrics.
